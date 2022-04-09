@@ -10,7 +10,7 @@
 ## Как выполнить задание?
  + Клонировать репозиторий 
  + `git clone https://github.com/Arseny007/ansible_repo.git`
- + В терминале открыть папку balansir `cd pg`
+ + В терминале открыть папку pg `cd pg`
  + Открываем [Vagrantfile](https://github.com/Arseny007/ansible_repo/blob/master/haproxy/Vagrantfile)
  + меняем 46ую строчку `ssh_pub_key = File.readlines("/home/arseny/.ssh/id_rsa.pub").first.strip`
  + +  надо указать тут свой путь до ключа
