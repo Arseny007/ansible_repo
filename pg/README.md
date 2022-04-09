@@ -21,4 +21,4 @@
  + **1)** Таблицы перенеслись с мастера. На реплике пытаемся создать табличку, выводит ошибку, мол, read-only:
  + ![1](https://github.com/Arseny007/ansible_repo/blob/master/pictures/pg/Screenshot%20from%202022-04-09%2014-05-46.png)
  + **2)** wal в архиве /wal:
- + ![2](https://github.com/Arseny007/ansible_repo/blob/master/pictures/pg/Screenshot%20from%202022-04-09%2014-05-46.png)
+ + ![2](https://github.com/Arseny007/ansible_repo/blob/master/pictures/pg/Screenshot%20from%202022-04-09%2014-12-09.png)
