@@ -1,0 +1,115 @@
+---
+- name: connect to .rpm postgresql
+  yum:
+    name:  
+      - https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+    state: present
+  tags:
+    - package
+    - pgsql
+
+- name: install postgresql
+  yum:
+    name:  
+      - postgresql14-server
+    state: present
+  tags:
+    - package
+    - pgsql
+
+- name: Check that the somefile.conf exists
+  stat:
+    path: "{{ pathtofiles }}postgresql.conf"
+  register: stat_result
+  tags:
+    - initdb
+    - conf_pgsql
+        
+- name: "Initialize PostgreSQL"
+  become_user: postgres
+  shell: "/usr/pgsql-14/bin/initdb -D {{ pathtofiles }} "
+  tags:
+    - initdb
+    - conf_pgsql
+    - pgsql
+  when: not stat_result.stat.exists
+
+- name: replace config
+  copy:
+    src: postgresql.conf
+    dest: "{{ pathtofiles }}postgresql.conf"
+  notify:
+    - restart postgresql-14
+  tags:
+    - pgsql
+    - conf_pgsql
+
+
+- name: replace conf to hba
+  postgresql_pg_hba:
+    dest: "{{ pathtofiles }}pg_hba.conf"
+    contype: host
+    users: "{{ db_user }}"
+    source: "{{ source_pgs }}"
+    databases: replication
+    method: md5
+  tags:
+    - conf_pgsql
+    - pgsql
+
+- name: create a folder
+  file:
+    path: /wal
+    state: directory
+    owner: postgres
+  tags:
+    - conf_pgsql
+    - pgsql
+
+- name: "Find out if PostgreSQL is initialized"
+  stat:
+    path: "/var/lib/pgsql/14/data/pg_hba.conf"
+  register: postgres_data
+  tags:
+    - initdb
+    - conf_pgsql
+    - pgsql
+
+- name: "Start and enable services"
+  service: "name={{ item }} state=started enabled=yes"
+  with_items:
+    - postgresql-14
+  tags:
+    - service
+    - pgsql
+    - start_pgsql
+
+- name: "Create app database"
+  postgresql_db:
+    state: present
+    name: "{{ db_name }}"
+  become: yes
+  become_user: postgres  
+  tags: 
+    - pgsql
+    - db
+
+
+- name: "Create db user"
+  postgresql_user:
+    state: present
+    name: "{{ db_user }}"
+    password: "{{ db_password }}"
+    role_attr_flags: replication
+  become: yes
+  become_user: postgres
+  tags: usr
+    - pgsql
+    - dd
+
+
+
+
+    
+
+

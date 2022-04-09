@@ -1,0 +1,19 @@
+---
+- name: "master setting"
+  hosts: master
+  become: true
+  strategy: linear
+  roles: 
+    - master
+  tags: 
+    master
+
+
+- name: "slave setting"
+  hosts: slave
+  become: true
+  strategy: linear
+  roles: 
+    - replica
+  tags: 
+    replica

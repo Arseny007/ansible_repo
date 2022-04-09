@@ -1,0 +1,25 @@
+---
+- name: connect to .rpm postgresql
+  yum:
+    name:  
+      - https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+    state: present
+  tags:
+    - package
+    - pgsql
+
+- name: install postgresql14-server
+  yum:
+    name:  
+      - postgresql14-server
+    state: present
+  tags:
+    - package
+    - pgsql
+
+- name: Basebackup
+  shell:  "sudo su - postgres -c 'PGPASSWORD=123 pg_basebackup -h 192.168.21.111 -U  repluser -p 5432 -D $PGDATA -Fp -Xs -P -R'"
+  notify: started postgresql-14
+  tags:
+    back
+  
